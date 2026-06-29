@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -14,11 +15,11 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/Unnati206/CalApplication.git'
+                    url: 'https://github.com/Unnati206/CalApplication.git'
             }
         }
 
-        stage('Build') {
+        stage('Build Application') {
             steps {
                 sh 'mvn clean package'
             }
@@ -37,31 +38,40 @@ pipeline {
             }
         }
 
-        stage('Copy JAR to Ansible') {
+        stage('Prepare Deployment') {
             steps {
                 sh '''
-                cp target/*.jar /home/ec2-user/app/CalApplication.jar
+                mkdir -p /home/ansible/app
+                cp target/*.jar /home/ansible/app/CalApplication.jar
                 '''
             }
         }
 
-        stage('Deploy using Ansible') {
+        stage('Deploy Using Ansible') {
             steps {
                 sh '''
-                cd /home/ec2-user/ansible
+                cd /home/ansible/ansible
                 ansible-playbook -i inventory deploy.yml
                 '''
             }
         }
+
     }
 
     post {
+
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Application Build & Deployment Successful'
         }
 
         failure {
-            echo 'Pipeline failed.'
+            echo 'Pipeline Failed'
         }
+
+        always {
+            cleanWs()
+        }
+
     }
 }
+```
