@@ -13,7 +13,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/cjcnkolhe/calculatorappwithsonarqubeapp.git'
+                git branch: 'main', url: https://github.com/Unnati206/CalApplication.git
             }
         }
 
